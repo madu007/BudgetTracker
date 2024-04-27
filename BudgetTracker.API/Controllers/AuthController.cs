@@ -148,7 +148,7 @@ namespace BudgetTracker.API.Controllers
         }
 
         [HttpPost("RestPassword")]
-        public async Task<IActionResult> RestPassword(RestPasswordModel rest)
+        public async Task<IActionResult> RestPassword([FromBody]RestPasswordModel rest)
         {
             var user = await _userManager.FindByEmailAsync(rest.Email);
             if (user != null)
