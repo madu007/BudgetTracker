@@ -40,9 +40,9 @@ namespace BudgetTracker.API.Controllers
                 _emailService.SendEmail(message);
 
                 return StatusCode(StatusCodes.Status200OK,
-                            new Domain.Model.Response { Status = "Success", Message = "Email verification sent to your email Successfully" });
+                            new Domain.Model.Response { IsSuccess = true, Message = tokenResponse.Message });
             }
-            return StatusCode(StatusCodes.Status200OK,
+            return StatusCode(StatusCodes.Status400BadRequest,
                            new Domain.Model.Response {  Message = tokenResponse.Message, IsSuccess = false });
 
         }
@@ -81,7 +81,7 @@ namespace BudgetTracker.API.Controllers
                     _emailService.SendEmail(message);
 
                     return StatusCode(StatusCodes.Status200OK,
-                     new Domain.Model.Response { IsSuccess = loginOtpResponse.IsSuccess, Status = "Success", Message = $"We have sent an OTP to your Email {user.Email}" });
+                     new Domain.Model.Response { IsSuccess = loginOtpResponse.IsSuccess, Status = "Success", Message = loginOtpResponse.Message });
                 }
                 if (user != null && await _userManager.CheckPasswordAsync(user, loginModel.Password))
                 {
@@ -103,7 +103,7 @@ namespace BudgetTracker.API.Controllers
                 return Ok(jwt);
             }
             return StatusCode(StatusCodes.Status404NotFound,
-                new Domain.Model.Response { Status = "Error", Message = $"Invalid Code" });
+                new Domain.Model.Response { Message = jwt.Message, IsSuccess = false });
         }
         
         [HttpPost]
@@ -116,7 +116,7 @@ namespace BudgetTracker.API.Controllers
                 return Ok(jwt);
             }
             return StatusCode(StatusCodes.Status404NotFound,
-                new Domain.Model.Response { Status = "Success", Message = $"Invalid Code" });
+                new Domain.Model.Response { Status = "Success", Message = jwt.Message });
         }
 
         [HttpPost("ForgotPassword")]

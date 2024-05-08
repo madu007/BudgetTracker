@@ -16,7 +16,7 @@ namespace BudgetTracker.Domain.Services
 {
     public interface ITokenService
     {
-        string CreateJWTToken(IdentityUser user, List<string> roles);
+        //string CreateJWTToken(IdentityUser user, List<string> roles);
         Task<ApiResponse<LoginResponse>> GetJwtTokenAsync(ApplicationUser user);
         Task<ApiResponse<LoginResponse>> RenewAccessTokenAsync(LoginResponse tokens);
 
@@ -32,35 +32,35 @@ namespace BudgetTracker.Domain.Services
             _userManager = userManager;
         }
 
-        public string CreateJWTToken(IdentityUser user, List<string> roles)
-        {
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(_configuration.GetSection("Authentication:JwtBearer:SecretKey").Value);
-            var minutres = Convert.ToDouble(_configuration.GetSection("Authentication:JwtBearer:AccessExpiration").Value);
-            var claims = new List<Claim>
-                {
-                    new Claim(ClaimTypes.Email, user.Email)
-                };
+        //public string CreateJWTToken(IdentityUser user, List<string> roles)
+        //{
+        //    var tokenHandler = new JwtSecurityTokenHandler();
+        //    var key = Encoding.ASCII.GetBytes(_configuration.GetSection("Authentication:JwtBearer:SecretKey").Value);
+        //    var minutres = Convert.ToDouble(_configuration.GetSection("Authentication:JwtBearer:AccessExpiration").Value);
+        //    var claims = new List<Claim>
+        //        {
+        //            new Claim(ClaimTypes.Email, user.Email)
+        //        };
 
-            foreach (var role in roles)
-            {
-                claims.Add(new Claim(ClaimTypes.Role, role));
-            }
+        //    foreach (var role in roles)
+        //    {
+        //        claims.Add(new Claim(ClaimTypes.Role, role));
+        //    }
 
-            var tokenDescriptor = new SecurityTokenDescriptor
-            {
-                Subject = new ClaimsIdentity(claims),
+        //    var tokenDescriptor = new SecurityTokenDescriptor
+        //    {
+        //        Subject = new ClaimsIdentity(claims),
 
-                Expires = DateTime.UtcNow.AddMinutes(minutres),
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key),
-                SecurityAlgorithms.HmacSha256Signature),
-                Audience = _configuration.GetSection("Authentication:JwtBearer:Audience").Value,
-                Issuer = _configuration.GetSection("Authentication:JwtBearer:Issuer").Value
-            };
+        //        Expires = DateTime.UtcNow.AddMinutes(minutres),
+        //        SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key),
+        //        SecurityAlgorithms.HmacSha256Signature),
+        //        Audience = _configuration.GetSection("Authentication:JwtBearer:Audience").Value,
+        //        Issuer = _configuration.GetSection("Authentication:JwtBearer:Issuer").Value
+        //    };
 
-            var token = tokenHandler.CreateToken(tokenDescriptor);
-            return tokenHandler.WriteToken(token);
-        }
+        //    var token = tokenHandler.CreateToken(tokenDescriptor);
+        //    return tokenHandler.WriteToken(token);
+        //}
 
         public async Task<ApiResponse<LoginResponse>> GetJwtTokenAsync(ApplicationUser user)
         {
@@ -78,7 +78,7 @@ namespace BudgetTracker.Domain.Services
 
             var jwtToken = GetToken(authClaims); //access token
             var refreshToken = GenerateRefreshToken();
-            _ = int.TryParse(_configuration["JWT:RefreshTokenValidity"], out int refreshTokenValidity);
+            _ = int.TryParse(_configuration["Authentication:JwtBearer:RefreshTokenValidity"], out int refreshTokenValidity);
 
             user.RefreshToken = refreshToken;
             user.RefreshTokenExpiry = DateTime.UtcNow.AddDays(refreshTokenValidity);
@@ -131,15 +131,13 @@ namespace BudgetTracker.Domain.Services
         private JwtSecurityToken GetToken(List<Claim> authClaims)
         {
             var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Authentication:JwtBearer:SecretKey"]));
-            _ = int.TryParse(_configuration["JWT:TokenValidityInMinutes"], out int tokenValidityInMinutes);
-            var expirationTimeUtc = DateTime.UtcNow.AddMinutes(tokenValidityInMinutes);
-            var localTimeZone = TimeZoneInfo.Local;
-            var expirationTimeInLocalTimeZone = TimeZoneInfo.ConvertTimeFromUtc(expirationTimeUtc, localTimeZone);
+            _ = int.TryParse(_configuration["Authentication:JwtBearer:TokenValidityInMinutes"], out int tokenValidityInMinutes);
+            var expirationTime = Convert.ToDouble(_configuration["Authentication:JwtBearer:TokenValidityInMinutes"]);
 
             var token = new JwtSecurityToken(
-                issuer: _configuration["Authentication:JwtBearer:Audience:Issuer"],
+                issuer: _configuration["Authentication:JwtBearer:Issuer"],
                 audience: _configuration["Authentication:JwtBearer:Audience"],
-                expires: expirationTimeInLocalTimeZone,
+                expires: DateTime.UtcNow.AddMinutes(expirationTime),
                 claims: authClaims,
                 signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
                 );
@@ -157,7 +155,7 @@ namespace BudgetTracker.Domain.Services
 
         private ClaimsPrincipal GetClaimsPrincipal(string accessToken)
         {
-            var tokenValidsteParamters = new TokenValidationParameters
+            var tokenValidateParameters = new TokenValidationParameters
             {
                 ValidateAudience = false,
                 ValidateIssuer = false,
@@ -166,7 +164,7 @@ namespace BudgetTracker.Domain.Services
                 ValidateLifetime = false
             };
             var tokenHandler = new JwtSecurityTokenHandler();
-            var principle = tokenHandler.ValidateToken(accessToken, tokenValidsteParamters, out SecurityToken securityToken);
+            var principle = tokenHandler.ValidateToken(accessToken, tokenValidateParameters, out SecurityToken securityToken);
             return principle;
         }
     }

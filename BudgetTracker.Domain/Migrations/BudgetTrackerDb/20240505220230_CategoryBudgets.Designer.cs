@@ -4,6 +4,7 @@ using BudgetTracker.Domain.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BudgetTracker.Domain.Migrations.BudgetTrackerDb
 {
     [DbContext(typeof(BudgetTrackerDbContext))]
-    partial class BudgetTrackerDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240505220230_CategoryBudgets")]
+    partial class CategoryBudgets
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -79,21 +82,21 @@ namespace BudgetTracker.Domain.Migrations.BudgetTrackerDb
 
             modelBuilder.Entity("BudgetTracker.Domain.Entities.CategoryLimit", b =>
                 {
-                    b.Property<int>("CategoryId")
+                    b.Property<int>("CategorysId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CategoryId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CategorysId"));
 
-                    b.Property<int>("CategoryId1")
+                    b.Property<int>("CategoryId")
                         .HasColumnType("int");
 
                     b.Property<decimal?>("SitLimit")
                         .HasColumnType("decimal(18, 2)");
 
-                    b.HasKey("CategoryId");
+                    b.HasKey("CategorysId");
 
-                    b.HasIndex("CategoryId1");
+                    b.HasIndex("CategoryId");
 
                     b.ToTable("CategoryLimits");
                 });
@@ -143,7 +146,7 @@ namespace BudgetTracker.Domain.Migrations.BudgetTrackerDb
                 {
                     b.HasOne("BudgetTracker.Domain.Entities.Category", "Category")
                         .WithMany()
-                        .HasForeignKey("CategoryId1")
+                        .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
