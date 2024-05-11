@@ -1,14 +1,9 @@
-﻿using Azure;
+﻿
 using BudgetTracker.Domain.Entities;
 using BudgetTracker.Domain.Model.Auth;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BudgetTracker.Domain.Services
 {

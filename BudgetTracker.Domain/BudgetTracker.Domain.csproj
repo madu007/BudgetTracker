@@ -6,7 +6,6 @@
     <Nullable>enable</Nullable>
 	  <BaseOutputPath>bin</BaseOutputPath>
 	  <DockerDefaultTargetOs>Linux</DockerDefaultTargetOs>
-	  <InvariantGlobalization>true</InvariantGlobalization>
   </PropertyGroup>
 
   <ItemGroup>

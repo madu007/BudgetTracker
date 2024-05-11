@@ -6,7 +6,6 @@
     <ImplicitUsings>enable</ImplicitUsings>
 	  <BaseOutputPath>bin</BaseOutputPath>
 	  <DockerDefaultTargetOs>Linux</DockerDefaultTargetOs>
-    <InvariantGlobalization>true</InvariantGlobalization>
   </PropertyGroup>
 
   <ItemGroup>
