@@ -58,10 +58,10 @@ services.Configure<IdentityOptions>(
 options => options.SignIn.RequireConfirmedEmail = true);
 services.AddAutoMapper(typeof(AutoMapperProfile));
 
-services.AddDbContext<AuthDBContext>(options => options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
+services.AddDbContext<AuthDBContext>(options => options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
 
 
-services.AddDbContext<BudgetTrackerDbContext>(options => options.UseSqlServer(configuration.GetConnectionString("BudgetTrackConnection")));
+services.AddDbContext<BudgetTrackerDbContext>(options => options.UseNpgsql(configuration.GetConnectionString("BudgetTrackConnection")));
 services.AddIdentity<ApplicationUser, IdentityRole>()
     .AddEntityFrameworkStores<AuthDBContext>()
     .AddDefaultTokenProviders();
