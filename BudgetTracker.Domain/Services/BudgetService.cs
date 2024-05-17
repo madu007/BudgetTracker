@@ -20,9 +20,9 @@ namespace BudgetTracker.Domain.Services
     }
     public class BudgetService : IBudgetService
     {
-        private readonly BudgetTrackerDbContext _dbContext;
+        private readonly AuthDBContext _dbContext;
 
-        public BudgetService(BudgetTrackerDbContext dbContext)
+        public BudgetService(AuthDBContext dbContext)
         {
             _dbContext = dbContext;
         }

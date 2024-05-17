@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Emit;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -16,6 +17,10 @@ namespace BudgetTracker.Domain.Data
         {
         }
 
+        public DbSet<Category> Categories { get; set; }
+        public DbSet<Transaction> Transactions { get; set; }
+        public DbSet<Budget> Budgets { get; set; }
+        public DbSet<CategoryLimit> CategoryLimits { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -35,6 +40,16 @@ namespace BudgetTracker.Domain.Data
             };
 
             builder.Entity<IdentityRole>().HasData(roles);
+
+            builder.Entity<Transaction>()
+        .Property(t => t.Amount)
+        .HasColumnType("decimal(18, 2)"); // Adjust precision and scale as needed
+            builder.Entity<Budget>()
+        .Property(t => t.Limit)
+        .HasColumnType("decimal(18, 2)");
+            builder.Entity<CategoryLimit>()
+        .Property(t => t.SitLimit)
+        .HasColumnType("decimal(18, 2)");
         }
     }    
 }

@@ -15,9 +15,9 @@ namespace BudgetTracker.Domain.Services
     }
     public class TransactionService : ITransactionService
     {
-        private readonly BudgetTrackerDbContext _context;
+        private readonly AuthDBContext _context;
 
-        public TransactionService(BudgetTrackerDbContext context)
+        public TransactionService(AuthDBContext context)
         {
             _context = context;
         }

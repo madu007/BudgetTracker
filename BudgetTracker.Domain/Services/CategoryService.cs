@@ -17,9 +17,9 @@ namespace BudgetTracker.Domain.Services
     }
     public class CategoryService : ICategoryService
     {
-        private readonly BudgetTrackerDbContext _budgetTrackerDb;
+        private readonly AuthDBContext _budgetTrackerDb;
 
-        public CategoryService(BudgetTrackerDbContext budgetTrackerDb)
+        public CategoryService(AuthDBContext budgetTrackerDb)
         {
             _budgetTrackerDb = budgetTrackerDb;
         }
